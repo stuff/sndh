@@ -41,6 +41,12 @@ cat > "$conf" <<XML
 
   <fileserve>1</fileserve>
 
+  <!-- Lets web pages on other origins use the stream with the Web Audio API
+       (visualizers, analysers), not only play it in an <audio> element. -->
+  <http-headers>
+    <header name="Access-Control-Allow-Origin" value="*" />
+  </http-headers>
+
   <paths>
     <basedir>/usr/share/icecast</basedir>
     <webroot>/usr/share/icecast/web</webroot>

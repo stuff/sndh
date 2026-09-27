@@ -26,7 +26,7 @@ services:
       - icecast
     environment:
       ICECAST_SOURCE_PASSWORD: ${ICECAST_SOURCE_PASSWORD:?ICECAST_SOURCE_PASSWORD must be set}
-      ICECAST_MOUNT: ${ICECAST_MOUNT:-radio.opus}
+      ICECAST_MOUNT: ${ICECAST_MOUNT:-atari-st.opus}
       OPUS_BITRATE: ${OPUS_BITRATE:-64}
       CROSSFADE_S: ${CROSSFADE_S:-3}
       RADIO_NAME: ${RADIO_NAME:-SNDH Radio}

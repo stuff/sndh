@@ -20,7 +20,9 @@ resource. Usage and deployment steps are in [README.md](README.md).
   - `src/station.ts`: glues DB + picker; tracks pending picks vs actual plays.
   - `src/index.ts`: the two HTTP servers (see API below).
 - `liquidsoap/radio.liq`: the radio engine script, baked into the image.
-- `icecast/`: Alpine + Icecast, config generated from env at startup.
+- `icecast/`: Alpine + Icecast, config generated from env at startup. It
+  adds `Access-Control-Allow-Origin: *` so web pages on other domains can
+  also read the stream with `fetch`/Web Audio, not just an `<audio>` tag.
 
 ## Data flow
 
@@ -32,7 +34,7 @@ resource. Usage and deployment steps are in [README.md](README.md).
    prefetches, so a pick is not a play yet. Picks not started yet stay in an
    in-memory "pending" list that counts for anti-repetition.
 3. Liquidsoap crossfades, encodes to Ogg Opus and sends it to Icecast, which
-   fans it out to listeners at `/radio.opus`.
+   fans it out to listeners at `/atari-st.opus`.
 
 If the scheduler is down, returns 503 (first run, initial indexing in
 progress) or has no playable track, Liquidsoap falls back to a random

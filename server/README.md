@@ -14,7 +14,7 @@ See [CLAUDE.md](CLAUDE.md) for the design and its pitfalls.
 
 | URL | What |
 |---|---|
-| `http://<icecast>:8000/radio.opus` | The audio stream (Ogg Opus, mono) |
+| `http://<icecast>:8000/atari-st.opus` | The audio stream (Ogg Opus, mono) |
 | `http://<scheduler>:3000/api/now-playing` | Current track and when it started |
 | `http://<scheduler>:3000/api/history?limit=20` | Last tracks played |
 | `http://<scheduler>:3000/api/health` | Status and library counts |
@@ -28,7 +28,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Then listen to <http://localhost:8000/radio.opus> in a browser or with
+Then listen to <http://localhost:8000/atari-st.opus> in a browser or with
 `ffplay`/`mpv`, and check <http://localhost:3000/api/now-playing>. On the first
 start the scheduler indexes the library (~45 s); a random fallback playlist
 plays meanwhile.
@@ -63,7 +63,7 @@ cd scheduler && bun install && bun test
    (the `:8000` tells Coolify which container port to route to), and
    `scheduler` → e.g. `https://api.radio.example.com:3000`. Do not expose
    `liquidsoap` or the scheduler's port 3001.
-6. Deploy. The stream is at `https://radio.example.com/radio.opus`.
+6. Deploy. The stream is at `https://radio.example.com/atari-st.opus`.
 
 To add new tracks later, rsync the new files, then either restart the
 scheduler or trigger a rescan from inside the network:

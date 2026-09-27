@@ -79,7 +79,7 @@ output.icecast(
   host=env("ICECAST_HOST", "icecast"),
   port=int_of_string(env("ICECAST_PORT", "8000")),
   password=icecast_password,
-  mount=env("ICECAST_MOUNT", "radio.opus"),
+  mount=env("ICECAST_MOUNT", "atari-st.opus"),
   name=env("RADIO_NAME", "SNDH Radio"),
   description=env("RADIO_DESCRIPTION", "Atari ST chiptunes from the SNDH archive"),
   genre="Chiptune",
