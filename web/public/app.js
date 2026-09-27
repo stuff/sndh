@@ -9,6 +9,8 @@ const config = Object.assign(
 
 // Refresh period of the track info.
 const POLL_MS = 10_000;
+// Number of past tracks listed under the player.
+const HISTORY_SIZE = 10;
 const VOLUME_KEY = "radio.volume";
 
 const $ = (id) => document.getElementById(id);
@@ -142,11 +144,45 @@ function render() {
   $("elapsed").textContent = formatTime(Math.min(elapsed, duration || elapsed));
   $("duration").textContent = formatTime(duration);
   $("bar").style.width = duration > 0 ? `${Math.min(100, (elapsed / duration) * 100)}%` : "0";
+
+  renderHistory(current);
+}
+
+const timeFormat = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" });
+let shownHistoryKey = "";
+
+// Past tracks: everything older than the one currently heard.
+function renderHistory(current) {
+  const past = plays.slice(plays.indexOf(current) + 1, plays.indexOf(current) + 1 + HISTORY_SIZE);
+  const key = past.map((p) => p.started_at).join();
+  if (key === shownHistoryKey) return;
+  shownHistoryKey = key;
+
+  const list = $("history");
+  list.replaceChildren(
+    ...past.map((p) => {
+      const item = document.createElement("li");
+      const time = document.createElement("time");
+      time.dateTime = p.started_at;
+      time.textContent = timeFormat.format(new Date(p.started_at));
+      const title = document.createElement("span");
+      title.className = "history-title";
+      title.textContent = p.track.title ?? p.track.path;
+      const artist = document.createElement("span");
+      artist.className = "history-artist";
+      artist.textContent = p.track.artist ?? "Unknown composer";
+      item.append(time, title, artist);
+      return item;
+    }),
+  );
+  $("history-section").hidden = past.length === 0;
 }
 
 async function refresh() {
   try {
-    const res = await fetch(`${config.apiUrl}/api/history?limit=2`, { cache: "no-store" });
+    // +2: the current track, and one the server already plays but listeners
+    // don't hear yet (see currentPlay).
+    const res = await fetch(`${config.apiUrl}/api/history?limit=${HISTORY_SIZE + 2}`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     plays = await res.json();
     if (plays.length === 0) $("title").textContent = "Nothing played yet";

@@ -28,13 +28,15 @@ deployment are in [README.md](README.md).
   every start joins the live edge. Stop removes the source (a paused live
   stream would otherwise resume behind live). If the stream ends (server
   restart), it reconnects after 2 s.
-- Track info comes from `GET {API_URL}/api/history?limit=2` every 10 s; the
-  progress bar is computed locally from `started_at` and `duration_s`.
+- Track info comes from `GET {API_URL}/api/history?limit=12` every 10 s; the
+  progress bar is computed locally from `started_at` and `duration_s`. The
+  plays older than the one currently heard fill the "Recently played" list
+  (10 entries), built with `textContent` only since tags come from files.
 - **Listener lag**: listeners hear the stream several seconds after the
   server plays it (Icecast's 64 KB burst-on-connect is ~8 s at 64 kbps). While
   playing, the page applies `STREAM_DELAY_S` to `started_at`, which is why it
-  fetches the previous play too: the old track stays displayed until the new
-  one is actually audible. When stopped, it shows the server's real time.
+  fetches one play more than it shows: the old track stays displayed until
+  the new one is actually audible. When stopped, it shows the server's real time.
 - Media Session metadata is set so the track shows on lock screens and in
   OS media controls.
 - Browsers that cannot play Ogg Opus get a notice

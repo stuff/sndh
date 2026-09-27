@@ -24,9 +24,9 @@
 
 * { box-sizing: border-box; }
 
-html, body { height: 100%; }
-
 body {
+  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -156,6 +156,44 @@ h1 { margin: 0; font-size: 26px; letter-spacing: -0.01em; }
   line-height: 1.45;
   color: var(--muted);
 }
+
+/* Recently played */
+
+.history {
+  width: 100%;
+  max-width: 420px;
+  padding: 22px 28px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+.history[hidden] { display: none; }
+.history h2 {
+  margin: 0 0 12px;
+  font: 600 11px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.history ol { margin: 0; padding: 0; list-style: none; }
+.history li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.history li:first-child { border-top: 0; padding-top: 0; }
+.history li:last-child { padding-bottom: 0; }
+.history time {
+  grid-row: span 2;
+  padding-top: 2px;
+  font: 12px var(--mono);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.history-title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.history-artist { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
 
 footer { max-width: 420px; text-align: center; font-size: 12px; line-height: 1.5; color: var(--muted); }
 footer a { color: inherit; }
