@@ -56,6 +56,9 @@ cd scheduler && bun install && bun test
 4. Set the environment variables (see [`.env.example`](.env.example)), at
    least `ICECAST_SOURCE_PASSWORD`, `ICECAST_ADMIN_PASSWORD` and
    `ICECAST_HOSTNAME`. `MUSIC_HOST_DIR` defaults to `/srv/sndh/opus_files`.
+   Generate the passwords with `openssl rand -hex 24`: Coolify may escape
+   quotes or `$` in values, so the two containers can end up with different
+   passwords (Liquidsoap then gets `401, Authentication Required`).
 5. Assign domains: `icecast` → e.g. `https://radio.example.com:8000`
    (the `:8000` tells Coolify which container port to route to), and
    `scheduler` → e.g. `https://api.radio.example.com:3000`. Do not expose
