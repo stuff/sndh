@@ -1,8 +1,9 @@
-# SNDH radio: scheduler (track picking + API), Liquidsoap (radio engine) and
-# Icecast (stream distribution). Only icecast:8000 (the audio stream) and
-# scheduler:3000 (public API) are meant to be reachable from outside; in
-# Coolify, give each of them a domain. For local ports, see
-# docker-compose.override.yml.
+# SNDH radio: scheduler (track picking + API), Liquidsoap (radio engine),
+# Icecast (stream distribution) and web (the player page, from ../web).
+# Only web:8080 is meant to be reachable from outside: its nginx serves the
+# page and proxies /atari-st.opus to Icecast and /api/ to the scheduler, so
+# the whole radio lives on one domain. In Coolify, give a domain to web only.
+# For local ports, see docker-compose.override.yml.
 
 services:
   scheduler:
@@ -43,6 +44,15 @@ services:
       ICECAST_MAX_LISTENERS: ${ICECAST_MAX_LISTENERS:-500}
     expose:
       - "8000"
+
+  web:
+    build: ../web
+    restart: unless-stopped
+    depends_on:
+      - icecast
+      - scheduler
+    expose:
+      - "8080"
 
 volumes:
   scheduler-state:

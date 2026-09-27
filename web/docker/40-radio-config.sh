@@ -15,9 +15,9 @@ esac
 
 cat > /usr/share/nginx/html/config.js <<JS
 window.RADIO_CONFIG = {
-  streamUrl: "$(js_string "${STREAM_URL:-http://localhost:8000/atari-st.opus}")",
-  apiUrl: "$(js_string "${API_URL:-http://localhost:3000}")",
+  streamUrl: "$(js_string "${STREAM_URL:-/atari-st.opus}")",
+  apiUrl: "$(js_string "${API_URL:-}")",
   streamDelayS: ${delay},
 };
 JS
-echo "radio config: stream ${STREAM_URL:-<default>}, api ${API_URL:-<default>}"
+echo "radio config: stream ${STREAM_URL:-/atari-st.opus}, api ${API_URL:-<same origin>}"

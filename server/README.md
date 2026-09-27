@@ -1,23 +1,28 @@
 # SNDH radio server
 
 A continuous web radio playing the Opus files produced by
-[`convert/`](../convert/). Three containers:
+[`convert/`](../convert/). Four containers:
 
 - **scheduler** (Bun/TypeScript): indexes the library, picks the next track,
   serves a JSON API (now playing, history).
 - **liquidsoap**: plays what the scheduler picks, crossfades, encodes to Opus.
 - **icecast**: streams the result to listeners.
+- **web**: the player page, built from [`../web`](../web/). Its nginx also
+  proxies the stream and the API, so everything is served from one domain.
 
 See [CLAUDE.md](CLAUDE.md) for the design and its pitfalls.
 
 ## Endpoints
 
-| URL | What |
+All on the `web` service's domain:
+
+| Path | What |
 |---|---|
-| `http://<icecast>:8000/atari-st.opus` | The audio stream (Ogg Opus, mono) |
-| `http://<scheduler>:3000/api/now-playing` | Current track and when it started |
-| `http://<scheduler>:3000/api/history?limit=20` | Last tracks played |
-| `http://<scheduler>:3000/api/health` | Status and library counts |
+| `/` | The player page |
+| `/atari-st.opus` | The audio stream (Ogg Opus, mono), proxied to Icecast |
+| `/api/now-playing` | Current track and when it started |
+| `/api/history?limit=20` | Last tracks played |
+| `/api/health` | Status and library counts |
 
 ## Run locally
 
@@ -28,8 +33,10 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Then listen to <http://localhost:8000/atari-st.opus> in a browser or with
-`ffplay`/`mpv`, and check <http://localhost:3000/api/now-playing>. On the first
+Then open the player at <http://localhost:8080>, or listen to
+<http://localhost:8080/atari-st.opus> with `ffplay`/`mpv`. For debugging, the
+override file also publishes Icecast (`:8000`) and the scheduler API
+(`:3000`) directly. On the first
 start the scheduler indexes the library (~45 s); a random fallback playlist
 plays meanwhile.
 
@@ -59,11 +66,12 @@ cd scheduler && bun install && bun test
    Generate the passwords with `openssl rand -hex 24`: Coolify may escape
    quotes or `$` in values, so the two containers can end up with different
    passwords (Liquidsoap then gets `401, Authentication Required`).
-5. Assign domains: `icecast` → e.g. `https://radio.example.com:8000`
-   (the `:8000` tells Coolify which container port to route to), and
-   `scheduler` → e.g. `https://api.radio.example.com:3000`. Do not expose
-   `liquidsoap` or the scheduler's port 3001.
-6. Deploy. The stream is at `https://radio.example.com/atari-st.opus`.
+5. Assign a domain to the `web` service only, e.g.
+   `https://radio.example.com:8080` (the `:8080` tells Coolify which container
+   port to route to). Leave `icecast`, `scheduler` and `liquidsoap` without a
+   domain: they are reached through `web`.
+6. Deploy. The page is at `https://radio.example.com`, the stream at
+   `https://radio.example.com/atari-st.opus`.
 
 To add new tracks later, rsync the new files, then either restart the
 scheduler or trigger a rescan from inside the network:

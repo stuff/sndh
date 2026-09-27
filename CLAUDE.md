@@ -27,7 +27,9 @@ reflected on both sides:
   TRACKNUMBER, TRACKTOTAL, GENRE, HARDWARE, COMMENT (see `convert/CLAUDE.md`).
 - Generated audio lives outside the project folders, which only hold code.
 
-`server` exposes what `web` consumes (see `server/CLAUDE.md`):
+`server` exposes what `web` consumes (see `server/CLAUDE.md`). Both are
+deployed together by `server/docker-compose.yml`: `web`'s nginx proxies the
+stream and the API, so the page uses same-origin paths.
 
 - The stream: `/atari-st.opus` on Icecast, one continuous Ogg Opus stream
   without in-stream metadata, with `Access-Control-Allow-Origin: *`.

@@ -3,6 +3,9 @@
 # reads docker-compose.yml and routes traffic through its own proxy instead.
 
 services:
+  web:
+    ports:
+      - "8080:8080"
   scheduler:
     ports:
       - "3000:3000"

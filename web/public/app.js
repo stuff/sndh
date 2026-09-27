@@ -3,7 +3,7 @@
 "use strict";
 
 const config = Object.assign(
-  { streamUrl: "http://localhost:8000/atari-st.opus", apiUrl: "http://localhost:3000", streamDelayS: 8 },
+  { streamUrl: "/atari-st.opus", apiUrl: "", streamDelayS: 8 },
   window.RADIO_CONFIG,
 );
 

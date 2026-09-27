@@ -10,8 +10,11 @@ resource. Usage and deployment steps are in [README.md](README.md).
 
 ## Layout
 
-- `docker-compose.yml`: the three services below. `docker-compose.override.yml`
-  publishes ports for local use only (Coolify does not read it).
+- `docker-compose.yml`: the services below, plus `web`, built from
+  [`../web`](../web/): the player page, whose nginx is also the only public
+  entry point (it proxies `/*.opus` to Icecast and `/api/` to the scheduler's
+  public port). `docker-compose.override.yml` publishes ports for local use
+  only (Coolify does not read it).
 - `scheduler/`: Bun + TypeScript service, stdlib + `music-metadata` only.
   - `src/indexer.ts`: scans `/music`, reads the Vorbis comments and the
     duration into SQLite. Incremental (mtime + size), and flags vanished files
@@ -34,7 +37,7 @@ resource. Usage and deployment steps are in [README.md](README.md).
    prefetches, so a pick is not a play yet. Picks not started yet stay in an
    in-memory "pending" list that counts for anti-repetition.
 3. Liquidsoap crossfades, encodes to Ogg Opus and sends it to Icecast, which
-   fans it out to listeners at `/atari-st.opus`.
+   fans it out to listeners at `/atari-st.opus` (through the `web` proxy).
 
 If the scheduler is down, returns 503 (first run, initial indexing in
 progress) or has no playable track, Liquidsoap falls back to a random
@@ -43,7 +46,7 @@ everything fails, `mksafe` streams silence rather than stopping.
 
 ## API
 
-- Public (`:3000`, exposed, CORS `*`): `GET /api/health`,
+- Public (`:3000`, reached through the `web` proxy, CORS `*`): `GET /api/health`,
   `GET /api/now-playing`, `GET /api/history?limit=N` (max 100). Tracks are
   serialized by `toPublic()` in `station.ts`.
 - Internal (`:3001`, Docker network only, never give it a domain):

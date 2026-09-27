@@ -13,7 +13,12 @@ deployment are in [README.md](README.md).
 - `docker/40-radio-config.sh`: run by the nginx image's entrypoint (every
   script in `/docker-entrypoint.d` is); rewrites `config.js` from
   `STREAM_URL`, `API_URL`, `STREAM_DELAY_S`, escaping the strings.
-- `nginx.conf`: static serving on 8080, `no-cache` revalidation, `/healthz`.
+- `templates/default.conf.template`: nginx config, rendered by the image's
+  envsubst step. Static serving on 8080 (`no-cache` revalidation), `/healthz`,
+  and the reverse proxy: `/*.opus` → `ICECAST_UPSTREAM` (unbuffered, it's an
+  endless stream), `/api/` → `API_UPSTREAM`. Upstreams go through variables +
+  `resolver` (Docker DNS, exported by the image as `NGINX_LOCAL_RESOLVERS`),
+  so nginx starts even if they don't resolve yet; requests then get a 502.
 - `Dockerfile`: `nginxinc/nginx-unprivileged`; the html folder is owned by
   the nginx user so the startup script can write `config.js`.
 
@@ -37,6 +42,8 @@ deployment are in [README.md](README.md).
 
 ## Contract with server/
 
-The page depends only on the public endpoints documented in the root
-`CLAUDE.md`: the Icecast stream and the scheduler's `/api/history`. Both send
-`Access-Control-Allow-Origin: *`, so the page can live on its own domain.
+The container is the `web` service of `server/docker-compose.yml` and the
+radio's only public entry point. The page depends only on the endpoints
+documented in the root `CLAUDE.md` (the stream and `/api/history`), through
+same-origin paths by default. Both also send `Access-Control-Allow-Origin: *`,
+so the page could be hosted elsewhere with absolute `STREAM_URL`/`API_URL`.

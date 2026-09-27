@@ -1,0 +1,46 @@
+# Rendered at startup by the nginx image (envsubst on ${VAR} placeholders
+# whose variable is set; nginx's own $variables are left alone).
+server {
+    listen 8080;
+    listen [::]:8080;
+    server_name _;
+    root /usr/share/nginx/html;
+    server_tokens off;
+
+    gzip on;
+    gzip_types text/css application/javascript image/svg+xml;
+
+    # Upstreams are resolved per request through Docker's DNS, so nginx
+    # starts even when icecast or scheduler are not up (yet).
+    resolver ${NGINX_LOCAL_RESOLVERS} valid=30s ipv6=off;
+
+    location / {
+        try_files $uri $uri/ =404;
+        # Small site, changed by redeploys: always revalidate. (add_header
+        # directives are not inherited once a location sets its own.)
+        add_header Cache-Control "no-cache" always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header Referrer-Policy strict-origin-when-cross-origin always;
+    }
+
+    # Icecast mounts (e.g. /atari-st.opus): endless streams, so no buffering.
+    location ~ ^/[A-Za-z0-9_.-]+\.opus$ {
+        set $icecast http://${ICECAST_UPSTREAM};
+        proxy_pass $icecast;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 60s;
+    }
+
+    # Scheduler public API.
+    location /api/ {
+        set $api http://${API_UPSTREAM};
+        proxy_pass $api;
+    }
+
+    location = /healthz {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+}
