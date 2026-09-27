@@ -88,6 +88,10 @@ only need to be written, the picker already honors them.
   returns status 523 ("no track (HTTP 523)" in the logs).
 - Tracks played by the fallback while the scheduler is down are not in the
   history (nobody to report them to).
+- Coolify only accepts `${VAR}`, `${VAR}/path` or `${VAR:-default}` as a
+  volume source (anything else, e.g. `${VAR:?message}`, is rejected as a
+  possible shell injection). Hence the `/srv/sndh/opus_files` default for
+  `MUSIC_HOST_DIR` instead of making it required.
 - Icecast 2.4 answers `400` to `HEAD` requests on mounts; use `GET`.
 - On the very first run the index is empty, so the scheduler answers 503 until
   the initial scan finishes (~45 s for ~3,900 files); later restarts only

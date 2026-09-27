@@ -54,8 +54,8 @@ cd scheduler && bun install && bun test
 3. In Coolify, create a **Docker Compose** resource from the repository, with
    base directory `/server` and compose file `docker-compose.yml`.
 4. Set the environment variables (see [`.env.example`](.env.example)), at
-   least `MUSIC_HOST_DIR=/srv/sndh/opus_files`, `ICECAST_SOURCE_PASSWORD`,
-   `ICECAST_ADMIN_PASSWORD` and `ICECAST_HOSTNAME`.
+   least `ICECAST_SOURCE_PASSWORD`, `ICECAST_ADMIN_PASSWORD` and
+   `ICECAST_HOSTNAME`. `MUSIC_HOST_DIR` defaults to `/srv/sndh/opus_files`.
 5. Assign domains: `icecast` → e.g. `https://radio.example.com:8000`
    (the `:8000` tells Coolify which container port to route to), and
    `scheduler` → e.g. `https://api.radio.example.com:3000`. Do not expose

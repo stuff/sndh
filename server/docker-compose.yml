@@ -13,7 +13,7 @@ services:
       RECENT_ARTISTS: ${RECENT_ARTISTS:-3}
       RESCAN_INTERVAL_S: ${RESCAN_INTERVAL_S:-0}
     volumes:
-      - ${MUSIC_HOST_DIR:?MUSIC_HOST_DIR must point to the Opus library}:/music:ro
+      - ${MUSIC_HOST_DIR:-/srv/sndh/opus_files}:/music:ro
       - scheduler-state:/state
     expose:
       - "3000"
@@ -31,7 +31,7 @@ services:
       CROSSFADE_S: ${CROSSFADE_S:-3}
       RADIO_NAME: ${RADIO_NAME:-SNDH Radio}
     volumes:
-      - ${MUSIC_HOST_DIR}:/music:ro
+      - ${MUSIC_HOST_DIR:-/srv/sndh/opus_files}:/music:ro
 
   icecast:
     build: ./icecast
