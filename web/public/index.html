@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chiptune Radio · Atari ST</title>
+  <meta name="description" content="Non-stop Atari ST chiptunes from the SNDH archive.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="player" data-state="stopped">
+    <header class="station">
+      <p class="live"><span class="channels" aria-hidden="true"><i></i><i></i><i></i></span>Live</p>
+      <h1>Chiptune Radio</h1>
+      <p class="tagline">Atari ST · YM2149 · non-stop</p>
+    </header>
+
+    <section class="track" aria-live="polite">
+      <p class="title" id="title">Tuning in…</p>
+      <p class="artist" id="artist">&nbsp;</p>
+      <p class="meta" id="meta">&nbsp;</p>
+    </section>
+
+    <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
+    <div class="times"><span id="elapsed">–:––</span><span id="duration">–:––</span></div>
+
+    <div class="controls">
+      <button type="button" class="play" id="play" aria-label="Play">
+        <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+        <svg class="icon-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/></svg>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+      <label class="volume">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12"/></svg>
+        <span class="sr-only">Volume</span>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.8">
+      </label>
+    </div>
+
+    <p class="notice" id="notice" hidden></p>
+  </main>
+
+  <footer>
+    Music from the <a href="https://sndh.atari.org/">SNDH archive</a>, rendered from the original YM2149 code.
+  </footer>
+
+  <audio id="audio" preload="none"></audio>
+</body>
+</html>
