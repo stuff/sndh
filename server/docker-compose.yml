@@ -1,0 +1,48 @@
+# SNDH radio: scheduler (track picking + API), Liquidsoap (radio engine) and
+# Icecast (stream distribution). Only icecast:8000 (the audio stream) and
+# scheduler:3000 (public API) are meant to be reachable from outside; in
+# Coolify, give each of them a domain. For local ports, see
+# docker-compose.override.yml.
+
+services:
+  scheduler:
+    build: ./scheduler
+    restart: unless-stopped
+    environment:
+      RECENT_TRACKS: ${RECENT_TRACKS:-500}
+      RECENT_ARTISTS: ${RECENT_ARTISTS:-3}
+      RESCAN_INTERVAL_S: ${RESCAN_INTERVAL_S:-0}
+    volumes:
+      - ${MUSIC_HOST_DIR:?MUSIC_HOST_DIR must point to the Opus library}:/music:ro
+      - scheduler-state:/state
+    expose:
+      - "3000"
+
+  liquidsoap:
+    build: ./liquidsoap
+    restart: unless-stopped
+    depends_on:
+      - scheduler
+      - icecast
+    environment:
+      ICECAST_SOURCE_PASSWORD: ${ICECAST_SOURCE_PASSWORD:?ICECAST_SOURCE_PASSWORD must be set}
+      ICECAST_MOUNT: ${ICECAST_MOUNT:-radio.opus}
+      OPUS_BITRATE: ${OPUS_BITRATE:-64}
+      CROSSFADE_S: ${CROSSFADE_S:-3}
+      RADIO_NAME: ${RADIO_NAME:-SNDH Radio}
+    volumes:
+      - ${MUSIC_HOST_DIR}:/music:ro
+
+  icecast:
+    build: ./icecast
+    restart: unless-stopped
+    environment:
+      ICECAST_SOURCE_PASSWORD: ${ICECAST_SOURCE_PASSWORD}
+      ICECAST_ADMIN_PASSWORD: ${ICECAST_ADMIN_PASSWORD:?ICECAST_ADMIN_PASSWORD must be set}
+      ICECAST_HOSTNAME: ${ICECAST_HOSTNAME:-localhost}
+      ICECAST_MAX_LISTENERS: ${ICECAST_MAX_LISTENERS:-500}
+    expose:
+      - "8000"
+
+volumes:
+  scheduler-state:

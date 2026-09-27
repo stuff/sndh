@@ -1,0 +1,11 @@
+# Local development only: publishes the stream and the public API on the
+# host. `docker compose up` merges this file automatically; Coolify only
+# reads docker-compose.yml and routes traffic through its own proxy instead.
+
+services:
+  scheduler:
+    ports:
+      - "3000:3000"
+  icecast:
+    ports:
+      - "8000:8000"
