@@ -178,7 +178,20 @@ function renderHistory(current) {
   $("history-section").hidden = past.length === 0;
 }
 
+async function refreshListeners() {
+  const label = $("listeners");
+  try {
+    const res = await fetch(`${config.apiUrl}/api/listeners`, { cache: "no-store" });
+    const { listeners } = res.ok ? await res.json() : {};
+    label.hidden = typeof listeners !== "number";
+    label.textContent = `${listeners} listening`;
+  } catch {
+    label.hidden = true;
+  }
+}
+
 async function refresh() {
+  refreshListeners();
   try {
     // +2: the current track, and one the server already plays but listeners
     // don't hear yet (see currentPlay).

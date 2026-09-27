@@ -22,6 +22,7 @@ All on the `web` service's domain:
 | `/atari-st.opus` | The audio stream (Ogg Opus, mono), proxied to Icecast |
 | `/api/now-playing` | Current track and when it started |
 | `/api/history?limit=20` | Last tracks played |
+| `/api/listeners` | Number of people listening right now |
 | `/api/health` | Status and library counts |
 
 ## Run locally

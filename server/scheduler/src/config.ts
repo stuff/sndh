@@ -25,4 +25,7 @@ export const config = {
   recentArtists: intEnv("RECENT_ARTISTS", 3),
   // Periodic library rescan, in seconds (0 = only at startup / on demand).
   rescanIntervalS: intEnv("RESCAN_INTERVAL_S", 0),
+  // Icecast, queried for the listener count of the radio's mount.
+  icecastUrl: (process.env.ICECAST_URL ?? "http://icecast:8000").replace(/\/+$/, ""),
+  icecastMount: (process.env.ICECAST_MOUNT ?? "atari-st.opus").replace(/^\/+/, ""),
 };

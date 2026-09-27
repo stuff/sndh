@@ -33,8 +33,8 @@ stream and the API, so the page uses same-origin paths.
 
 - The stream: `/atari-st.opus` on Icecast, one continuous Ogg Opus stream
   without in-stream metadata, with `Access-Control-Allow-Origin: *`.
-- Now-playing and history: JSON from the scheduler's public API
-  (`/api/now-playing`, `/api/history`, `/api/health`). Future votes and
+- Now-playing, history and listener count: JSON from the scheduler's public
+  API (`/api/now-playing`, `/api/history`, `/api/listeners`, `/api/health`). Future votes and
   blacklist endpoints will live there too.
 
 ## Conventions

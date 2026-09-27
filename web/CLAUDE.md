@@ -37,6 +37,8 @@ deployment are in [README.md](README.md).
   playing, the page applies `STREAM_DELAY_S` to `started_at`, which is why it
   fetches one play more than it shows: the old track stays displayed until
   the new one is actually audible. When stopped, it shows the server's real time.
+- The listener count (`/api/listeners`, polled with the history) is shown
+  next to "Live", and hidden when the API returns `null`.
 - Media Session metadata is set so the track shows on lock screens and in
   OS media controls.
 - Browsers that cannot play Ogg Opus get a notice

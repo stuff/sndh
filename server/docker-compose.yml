@@ -13,6 +13,7 @@ services:
       RECENT_TRACKS: ${RECENT_TRACKS:-500}
       RECENT_ARTISTS: ${RECENT_ARTISTS:-3}
       RESCAN_INTERVAL_S: ${RESCAN_INTERVAL_S:-0}
+      ICECAST_MOUNT: ${ICECAST_MOUNT:-atari-st.opus}
     volumes:
       - ${MUSIC_HOST_DIR:-/srv/sndh/opus_files}:/music:ro
       - scheduler-state:/state

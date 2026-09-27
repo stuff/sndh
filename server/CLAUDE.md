@@ -47,7 +47,10 @@ everything fails, `mksafe` streams silence rather than stopping.
 ## API
 
 - Public (`:3000`, reached through the `web` proxy, CORS `*`): `GET /api/health`,
-  `GET /api/now-playing`, `GET /api/history?limit=N` (max 100). Tracks are
+  `GET /api/now-playing`, `GET /api/history?limit=N` (max 100),
+  `GET /api/listeners` (`{listeners: n}`, `null` if Icecast is down or the
+  mount is not live). The count comes from Icecast's `status-json.xsl`
+  (`src/icecast.ts`), cached 5 s so visitors' polls cost Icecast little. Tracks are
   serialized by `toPublic()` in `station.ts`.
 - Internal (`:3001`, Docker network only, never give it a domain):
   `GET /internal/next`, `POST /internal/started` (body: file path),

@@ -6,11 +6,13 @@
 
 import { config } from "./config";
 import { openDb } from "./db";
+import { createListenerCounter } from "./icecast";
 import { scanLibrary } from "./indexer";
 import { Station, toPublic } from "./station";
 
 const db = openDb(config.dbPath);
 const station = new Station(db, config);
+const countListeners = createListenerCounter(config.icecastUrl, config.icecastMount);
 
 let scanning: Promise<void> | null = null;
 // On a first run (empty index), picks would be biased towards the files
@@ -53,6 +55,8 @@ Bun.serve({
       const limit = Number.isFinite(raw) ? Math.min(Math.max(raw, 1), 100) : 20;
       return json(station.history(limit));
     },
+    // null when Icecast is unreachable or the mount is not live.
+    "/api/listeners": async () => json({ listeners: await countListeners() }),
   },
   fetch(req) {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });

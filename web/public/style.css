@@ -64,6 +64,10 @@ body {
   color: var(--muted);
 }
 
+/* Listener count, next to "Live"; stays muted even while playing. */
+.listeners { color: var(--muted); }
+.listeners::before { content: "·"; margin-right: 8px; }
+
 /* Three bars, one per YM2149 channel; they dance while playing. */
 .channels { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
 .channels i { width: 3px; height: 4px; border-radius: 1px; background: currentColor; }
